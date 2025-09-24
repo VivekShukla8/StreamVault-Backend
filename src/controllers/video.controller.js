@@ -110,57 +110,26 @@ const getAllVideos = asyncHandler(async (req, res) => {
 })
 
 const uploadVideo = asyncHandler(async (req, res) => {
-    const { title, description } = req.body;
-    if (!title) throw new APIerror(400, "Title is required");
+    const { title, description, videofile, thumbnail, videoPublicId, thumbnailPublicId, duration } = req.body;
 
-    const videoFiles = req.files?.videofile || req.files?.video || null;
-    const thumbnailFiles = req.files?.thumbnail || req.files?.thumb || null;
-
-    const videoFile = Array.isArray(videoFiles) ? videoFiles[0] : videoFiles;
-    const thumbnailFile = Array.isArray(thumbnailFiles) ? thumbnailFiles[0] : thumbnailFiles;
-
-    if (!videoFile || !thumbnailFile) {
-        throw new APIerror(400, "Video and thumbnail are required");
-    }
-
-    let uploadedThumbnail;
-    let uploadedVideo;
-
-    try {
-        uploadedThumbnail = await uploadOnCloudinary(thumbnailFile.path, {
-            resource_type: "image",
-            folder: "thumbnails"
-        })
-        
-    } catch (error) {
-        throw new APIerror(500, error?.message || "Error while uploading thumbnail image");
-    }
-
-    try {
-        uploadedVideo = await uploadOnCloudinary(videoFile.path, {
-            resource_type: "video",
-            folder: "videos"
-        })
-        
-    } catch (error) {
-        throw new APIerror(500, error?.message || "Error while uploading video file");
-    }
-
-    if (!uploadedVideo?.url || !uploadedThumbnail?.url) {
-        throw new APIerror(500, "Upload failed");
+    if (!title || !videofile || !thumbnail || !videoPublicId || !thumbnailPublicId) {
+        throw new APIerror(400, "All video and thumbnail information is required");
     }
 
     const video = await Video.create({
         title: title,
         description: description || "",
-        videofile: uploadedVideo?.url,
-        thumbnail: uploadedThumbnail?.url,
-        videoPublicId: uploadedVideo?.public_id, // store public_id for deletion
-        thumbnailPublicId: uploadedThumbnail?.public_id,
-        duration: uploadedVideo.duration ?? 0,
+        videofile,
+        thumbnail,
+        videoPublicId, // store public_id for deletion
+        thumbnailPublicId,
+        duration: duration || 0,
         owner: req.user._id,
         isPublished: true
     })
+
+    console.log("req.body:", req.body);
+    console.log("req.files:", req.files);
 
     return res
         .status(200)
