@@ -101,4 +101,8 @@ app.use("/api/v1/search", searchRoutes);
 import cloudinaryRouter from "./routes/cloudinary.routes.js"
 app.use("/api/v1/cloudinary", cloudinaryRouter);
 
+// Message routes
+import messagRoutes from "./routes/messages.routes.js"
+app.use("/api/v1/messages",messagRoutes)
+
 export default app;

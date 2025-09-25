@@ -1,22 +1,29 @@
-// require('dotenv').config()
-
+import dotenv from "dotenv";
+import { createServer } from "http";
 import connectDB from "./db/index.js";
-import dotenv from "dotenv"
 import app from "./app.js";
+import { initSocket } from "./socket.js";
 
-dotenv.config({
-    path:'./.env'
-})
+dotenv.config({ path: "./.env" });
 
 const PORT = process.env.PORT || 8000;
-connectDB().then(()=>{
-    app.listen(PORT || 8000 ,()=>{
-        console.log(`Server is running at port :${PORT}`)
-    })
-})
-.catch((err) => {
-    console.log("Connection failed", err);
-})
+
+// 1. Create HTTP server
+const httpServer = createServer(app);
+
+// 2. Initialize socket
+initSocket(httpServer);
+
+// 3. Connect DB and start server
+connectDB()
+  .then(() => {
+    httpServer.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Connection failed", err);
+  });
 
 
 
