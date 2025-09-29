@@ -26,6 +26,9 @@ const messageRequestSchema = new Schema(
 );
 
 // Add index for faster queries
-messageRequestSchema.index({ receiver: 1, status: 1 });
+messageRequestSchema.index(
+  { sender: 1, receiver: 1 },
+  { unique: true } 
+);
 
 export const MessageRequest = mongoose.model("MessageRequest", messageRequestSchema);

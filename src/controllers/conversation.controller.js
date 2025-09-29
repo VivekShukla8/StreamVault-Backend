@@ -15,6 +15,7 @@ const getConversations = asyncHandler(async (req, res) => {
         .populate("participants", "username avatar")
         .populate("lastMessage");
 
+
     return res
         .status(200)
         .json(new ApiResponse(200, convs, "Conversations fetched successfully"));
@@ -68,14 +69,31 @@ const sendMessage = asyncHandler(async (req, res) => {
 
     const populated = await msg.populate("sender", "username avatar");
 
-    // Emit to all participants
-    conv.participants.forEach(p =>
-        io.to(String(p)).emit("new_message", { conversationId: id, message: populated })
-    );
+     // Debug log
+    console.log("📨 Message saved, emitting to conversation room & participants:", {
+        conversationId: id,
+        messageId: populated._id,
+        participants: conv.participants,
+    });
 
-    return res
-        .status(201)
-        .json(new ApiResponse(201, populated, "Message sent successfully"));
+
+    // Emit to conversation room (clients that joined the conversation)
+    try {
+        io.to(String(id)).emit("new_message", { conversationId: id, message: populated });
+    } catch (err) {
+        console.warn("Could not emit to conversation room:", err);
+    }
+
+    // Emit to each participant personal room (for clients that joined personal rooms)
+    conv.participants.forEach((p) => {
+        try {
+        io.to(String(p)).emit("new_message", { conversationId: id, message: populated });
+        } catch (e) {
+        // swallow per-participant emit errors
+        }
+    });
+
+    return res.status(201).json(new ApiResponse(201, populated, "Message sent successfully"));
 });
 
 export { getConversations, getMessages, sendMessage };
