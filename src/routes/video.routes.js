@@ -22,7 +22,16 @@ router.patch("/:videoId/views", optionalAuth, incrementVideoViews); // Increment
 router.get("/:videoId", getVideoById);      // Get a single video by id (public)
 
 // Protected routes
-router.post("/", verifyJWT, uploadVideo);   // Upload a new video
+// video.routes.js - Refactored Protected route for POST /
+router.post(
+    "/",
+    verifyJWT,
+    upload.fields([
+        { name: "videoFile", maxCount: 1 }, // Changed from 'videofile' to 'videoFile' for clarity
+        { name: "thumbnail", maxCount: 1 }
+    ]),
+    uploadVideo // This controller now receives req.files
+);
 
 router.patch("/:videoId", verifyJWT, updateVideo);
 
