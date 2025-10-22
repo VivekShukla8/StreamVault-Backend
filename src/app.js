@@ -20,7 +20,7 @@ app.use(cors({
       'http://127.0.0.1:3000',
       '*', // Allow all origins (for development, not recommended for production)
       // Add your Vercel frontend URL here
-      "https://stream-vault-frontend1.vercel.app/#/" 
+      process.env.FRONTEND_URL, // Set this in your backend deployment
     ];
     
     // Filter out undefined values

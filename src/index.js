@@ -6,7 +6,7 @@ import { initSocket } from "./socket.js";
 
 dotenv.config({ path: "./.env" });
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8000;  
 
 // 1. Create HTTP server
 const httpServer = createServer(app);
