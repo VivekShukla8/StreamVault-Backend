@@ -11,6 +11,7 @@ export const initSocket = (httpServer) => {
         "http://127.0.0.1:5173",
         "http://localhost:3000",
         "https://stream-vault-frontend1.vercel.app/#/"
+        //  process.env.FRONTEND_URL
       ].filter(Boolean),
       credentials: true,
       methods: ["GET", "POST"]
