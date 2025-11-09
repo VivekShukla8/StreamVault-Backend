@@ -33,5 +33,6 @@
     "mongoose-aggregate-paginate-v2": "^1.1.4",
     "multer": "^2.0.2",
     "socket.io": "^4.8.1"
-  }
+  },
+   "engines": { "node": "18.x" }
 }
