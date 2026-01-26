@@ -18,9 +18,8 @@ app.use(cors({
       'http://127.0.0.1:5174',
       'http://127.0.0.1:5175',
       'http://127.0.0.1:3000',
-      '*', // Allow all origins (for development, not recommended for production)
-      // Add your Vercel frontend URL here
-      process.env.FRONTEND_URL, // Set this in your backend deployment
+      '*', // Allow all origins  
+      process.env.FRONTEND_URL, 
     ];
     
     // Filter out undefined values

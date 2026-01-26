@@ -12,7 +12,7 @@ const connectDB = async () => {
         const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`, {
             bufferCommands: false,
         });
-        console.log(`\n MongoDb connected. DB host: ${connectionInstance.connection.host}`);
+        console.log(`MongoDb connected. DB host: ${connectionInstance.connection.host}`);
     } catch (error) {
         console.log("MongoDB connection error:", error);
         throw error; // Don't exit process in serverless
