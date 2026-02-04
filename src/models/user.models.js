@@ -1,6 +1,6 @@
 import mongoose ,{Mongoose, Schema} from "mongoose";
 import jwt from "jsonwebtoken"
-import brcypt from "bcrypt"
+import bcrypt from "bcrypt"
 
 const userSchema = new Schema(
     {
@@ -51,14 +51,16 @@ const userSchema = new Schema(
 
 userSchema.pre('save',async function(next){
     if(!this.isModified("password")) return next()
-    this.password = await brcypt.hash(this.password,12)
+    this.password = await bcrypt.hash(this.password,12)
     next()
 })
 
+// Checking password correctness
 userSchema.methods.isPasswordCorrect = async function (password) {
-    return await brcypt.compare(password,this.password)
+    return await bcrypt.compare(password,this.password)
 }
 
+// Generating JWT tokens
 userSchema.methods.generateAccessToken = function(){
     return jwt.sign(
         {
